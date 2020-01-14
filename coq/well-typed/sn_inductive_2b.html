@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="../">Project Page</a>
+      <a href="./indexpage.html"> Index </a>
+      <a href="./toc.html"> Table of Contents </a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<h1 class="libtitle">sn_inductive_2b</h1>
+
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">base</span> <span class="id" title="var">contexts</span> <span class="id" title="var">stlc</span> <span class="id" title="var">reduction</span> <span class="id" title="var">sn_defs</span> <span class="id" title="var">sn_inductive_2a</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab11"></a><h2 class="section">Logical Relation</h2>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">Red</span> (<span class="id" title="var">g</span> : <span class="id" title="var">ctx</span>) (<span class="id" title="var">A</span> : <span class="id" title="var">ty</span>) : <span class="id" title="var">tm</span> <span class="id" title="var">g</span> <span class="id" title="var">A</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">A</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">Base</span> =&gt; <span class="id" title="keyword">fun</span> <span class="id" title="var">s</span> =&gt; <span class="id" title="var">SN</span> <span class="id" title="var">s</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">Fun</span> <span class="id" title="var">A</span> <span class="id" title="var">B</span> =&gt; <span class="id" title="keyword">fun</span> <span class="id" title="var">s</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">g'</span> (<span class="id" title="var">S</span> : <span class="id" title="var">ren</span> <span class="id" title="var">g</span> <span class="id" title="var">g'</span>) (<span class="id" title="var">t</span> : <span class="id" title="var">tm</span> <span class="id" title="var">g'</span> <span class="id" title="var">A</span>), <span class="id" title="var">Red</span> <span class="id" title="var">t</span> -&gt; <span class="id" title="var">Red</span> (<span class="id" title="var">app</span> (<span class="id" title="var">rinst</span> <span class="id" title="var">S</span> <span class="id" title="var">s</span>) <span class="id" title="var">t</span>)<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">RedS</span> <span class="id" title="var">g</span> <span class="id" title="var">g'</span> (<span class="id" title="var">S</span>: <span class="id" title="tactic">subst</span> <span class="id" title="var">g</span> <span class="id" title="var">g'</span>) :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">B</span> <span class="id" title="var">i</span>, <span class="id" title="var">Red</span> (<span class="id" title="var">S</span> <span class="id" title="var">B</span> <span class="id" title="var">i</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">rename_red</span> <span class="id" title="var">G1</span> <span class="id" title="var">G2</span> <span class="id" title="var">A</span> (<span class="id" title="var">f</span> : <span class="id" title="var">ren</span> <span class="id" title="var">G1</span> <span class="id" title="var">G2</span>) (<span class="id" title="var">s</span> : <span class="id" title="var">tm</span> <span class="id" title="var">G1</span> <span class="id" title="var">A</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">Red</span> <span class="id" title="var">s</span> -&gt; <span class="id" title="var">Red</span> (<span class="id" title="var">rinst</span> <span class="id" title="var">f</span> <span class="id" title="var">s</span>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">case</span>: <span class="id" title="var">A</span> <span class="id" title="var">s</span> =&gt; [|<span class="id" title="var">A</span> <span class="id" title="var">B</span>] <span class="id" title="var">s</span> /=. { <span class="id" title="tactic">intros</span> <span class="id" title="var">H</span>. <span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="tactic">rename</span>. }<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">H</span> <span class="id" title="var">G3</span> <span class="id" title="var">g</span> <span class="id" title="var">t</span> <span class="id" title="var">lt</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">rinst_comp</span>. <span class="id" title="tactic">exact</span>: <span class="id" title="var">H</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">rename_redS</span> <span class="id" title="var">g</span> <span class="id" title="var">g'</span> <span class="id" title="var">h</span>  (<span class="id" title="var">R</span>: <span class="id" title="var">ren</span> <span class="id" title="var">g'</span> <span class="id" title="var">h</span>) (<span class="id" title="var">S</span>: <span class="id" title="tactic">subst</span> <span class="id" title="var">g</span> <span class="id" title="var">g'</span>):<br/>
+&nbsp;&nbsp;<span class="id" title="var">RedS</span> <span class="id" title="var">S</span>  -&gt; <span class="id" title="var">RedS</span> (<span class="id" title="var">S</span> &gt;&gt; @<span class="id" title="var">rinst</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">R</span>).<br/>
+<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">H</span> <span class="id" title="var">A</span> <span class="id" title="var">s</span>. <span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">rename_red</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">cr</span> <span class="id" title="var">A</span>:<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">forall</span> <span class="id" title="var">g</span> (<span class="id" title="var">M</span>: <span class="id" title="var">tm</span> <span class="id" title="var">g</span> <span class="id" title="var">A</span>), <span class="id" title="var">Red</span> <span class="id" title="var">M</span> -&gt; <span class="id" title="var">SN</span> <span class="id" title="var">M</span>) /\ (<span class="id" title="keyword">forall</span> <span class="id" title="var">g</span> (<span class="id" title="var">M</span>: <span class="id" title="var">tm</span> <span class="id" title="var">g</span> <span class="id" title="var">A</span>), <span class="id" title="var">SNe</span> <span class="id" title="var">M</span> -&gt; <span class="id" title="var">Red</span> <span class="id" title="var">M</span>) /\ (<span class="id" title="keyword">forall</span> <span class="id" title="var">g</span> (<span class="id" title="var">M</span> <span class="id" title="var">M'</span>: <span class="id" title="var">tm</span> <span class="id" title="var">g</span> <span class="id" title="var">A</span>), <span class="id" title="var">SNRed</span> <span class="id" title="var">M</span> <span class="id" title="var">M'</span> -&gt; <span class="id" title="var">Red</span> <span class="id" title="var">M'</span> -&gt; <span class="id" title="var">Red</span> <span class="id" title="var">M</span>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">A</span> <span class="id" title="keyword">as</span> [|<span class="id" title="var">A</span> <span class="id" title="var">IHA</span> <span class="id" title="var">B</span> <span class="id" title="var">IHB</span>].<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">split</span>; <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">SNeu</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">SRed</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">M'</span> := <span class="id" title="var">M'</span>).<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">split</span>; <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">eapply</span> <span class="id" title="var">anti_rename</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">R</span> := <span class="id" title="var">shift</span>) (<span class="id" title="var">M</span> := <span class="id" title="var">rinst</span> <span class="id" title="var">shift</span> <span class="id" title="var">M</span>); [|<span class="id" title="tactic">reflexivity</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">ext_SN</span>, <span class="id" title="var">IHB</span>, <span class="id" title="var">H</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHA</span>, (<span class="id" title="var">SVar</span> <span class="id" title="var">_</span> <span class="id" title="var">A</span> <span class="id" title="var">var0</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">intros</span> <span class="id" title="var">g'</span> <span class="id" title="var">R</span> <span class="id" title="var">N</span> <span class="id" title="var">H'</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHB</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="var">SApp</span>. <span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="tactic">rename</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">intuition</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">intros</span> <span class="id" title="var">g'</span> <span class="id" title="var">R</span> <span class="id" title="var">N</span> <span class="id" title="var">rn</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHB</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">M'</span> := <span class="id" title="var">app</span> (<span class="id" title="var">rinst</span> <span class="id" title="var">R</span> <span class="id" title="var">M'</span>) <span class="id" title="var">N</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">constructor</span>. <span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="tactic">rename</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>, <span class="id" title="var">rn</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">red_var</span> <span class="id" title="var">g</span> <span class="id" title="var">A</span> (<span class="id" title="var">p</span>: <span class="id" title="var">at_ty</span> <span class="id" title="var">g</span> <span class="id" title="var">A</span>):<br/>
+&nbsp;&nbsp;<span class="id" title="var">Red</span> (<span class="id" title="var">var</span> <span class="id" title="var">p</span>).<br/>
+<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">cr</span>, <span class="id" title="var">SVar</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">main_lemma</span> <span class="id" title="var">g</span> <span class="id" title="var">g'</span> <span class="id" title="var">A</span> (<span class="id" title="var">M</span>: <span class="id" title="var">tm</span> <span class="id" title="var">g</span> <span class="id" title="var">A</span>) (<span class="id" title="var">S</span>: <span class="id" title="tactic">subst</span> <span class="id" title="var">g</span> <span class="id" title="var">g'</span>):<br/>
+&nbsp;&nbsp;<span class="id" title="var">RedS</span> <span class="id" title="var">S</span> -&gt; <span class="id" title="var">Red</span> (<span class="id" title="var">inst</span> <span class="id" title="var">S</span> <span class="id" title="var">M</span>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">revert</span> <span class="id" title="var">g'</span> <span class="id" title="var">S</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">M</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">p</span> | <span class="id" title="var">g</span> <span class="id" title="var">A</span> <span class="id" title="var">B</span> <span class="id" title="var">M</span> <span class="id" title="var">IHM</span> <span class="id" title="var">N</span> <span class="id" title="var">IHN</span> |<span class="id" title="var">g</span> <span class="id" title="var">A</span> <span class="id" title="var">B</span> <span class="id" title="var">M</span> <span class="id" title="var">IHM</span>]; <span class="id" title="tactic">intros</span> <span class="id" title="var">g'</span> <span class="id" title="var">S</span> <span class="id" title="var">rs</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <span class="id" title="var">rs</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">specialize</span> (<span class="id" title="var">IHM</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">rs</span> <span class="id" title="var">g'</span> <span class="id" title="var">idren</span> <span class="id" title="var">_</span> (<span class="id" title="var">IHN</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">rs</span>)). <span class="id" title="var">revert</span> <span class="id" title="var">IHM</span>. <span class="id" title="var">now</span> <span class="id" title="var">asimpl</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">intros</span> <span class="id" title="var">g''</span> <span class="id" title="var">R</span> <span class="id" title="var">N</span> <span class="id" title="var">rn</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">cr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">econstructor</span>; [<span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">cr</span>| <span class="id" title="tactic">reflexivity</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="var">asimpl</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">IHM</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">C</span> [-&gt;|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="var">rn</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">rinst_inst</span>. <span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">rename_redS</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">id_red</span> <span class="id" title="var">g</span> : @<span class="id" title="var">RedS</span> <span class="id" title="var">g</span> <span class="id" title="var">g</span> <span class="id" title="var">ids</span>.<br/>
+<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">A</span> <span class="id" title="var">p</span>. <span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">red_var</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">norm</span> <span class="id" title="var">g</span> <span class="id" title="var">A</span> (<span class="id" title="var">M</span>: <span class="id" title="var">tm</span> <span class="id" title="var">g</span> <span class="id" title="var">A</span>) : <span class="id" title="var">SN</span> <span class="id" title="var">M</span>.<br/>
+<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">inst_ids</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">cr</span>, <span class="id" title="var">main_lemma</span>, <span class="id" title="var">id_red</span>. <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr/">coqdoc</a> and improved with <a href="https://github.com/tebbi/coqdocjs">CoqdocJS</a>
+</div>
+</div>
+</body>
+
+</html>

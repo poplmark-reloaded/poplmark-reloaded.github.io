@@ -1,0 +1,199 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<style type="text/css">
+		body {
+			padding: 2em 1em 2em 1em;
+			margin: 0;
+			font-family: sans-serif;
+			color: black;
+			background: white;}
+		a{text-decoration:none;}
+		a:link { color: #00C; background: transparent }
+		a:visited { color: #00C; background: transparent }
+		a:active { color: #C00; background: transparent }
+		keyword { color: #3333cc ; background: transparent }
+		pre {
+			border: 1px dashed maroon;  display:block;
+			padding:8px; background-color: #dddddd;}
+		code {
+			background-color: #dddddd;
+			color: black; font-family: "courier";margin:0;
+			white-space: pre-wrap; }
+		.typ {color: #660000; font-weight:bold}
+		.constructor {color: #335C85; font-weight:bold}
+		.function {color: #660033; font-weight:bold}
+		.schema {color: #6600CC; font-weight:bold}
+	</style>
+</head>
+<body>
+<br><pre><code><keyword>LF</keyword> <span class="typ" id="ty">ty</span> : <keyword>type</keyword> = 
+| <span class="constructor" id="base">base</span> : <a href="#ty">ty</a>
+| <span class="constructor" id="arr">arr</span> : <a href="#ty">ty</a> &#x2192 <a href="#ty">ty</a> &#x2192 <a href="#ty">ty</a>
+| <span class="constructor" id="sum">sum</span> : <a href="#ty">ty</a> &#x2192 <a href="#ty">ty</a> &#x2192 <a href="#ty">ty</a>;
+<br><keyword>%name</keyword> ty T 
+<br><keyword>LF</keyword> <span class="typ" id="tm">tm</span> : <a href="#ty">ty</a> &#x2192 <keyword>type</keyword> = 
+| <span class="constructor" id="abs">abs</span> : (<a href="#tm">tm</a> A &#x2192 <a href="#tm">tm</a> B) &#x2192 <a href="#tm">tm</a> (<a href="#arr">arr</a> A B)
+| <span class="constructor" id="app">app</span> : <a href="#tm">tm</a> (<a href="#arr">arr</a> A B) &#x2192 <a href="#tm">tm</a> A &#x2192 <a href="#tm">tm</a> B
+| <span class="constructor" id="inl">inl</span> : {B : <a href="#ty">ty</a>} (<a href="#tm">tm</a> A &#x2192 <a href="#tm">tm</a> (<a href="#sum">sum</a> A B))
+| <span class="constructor" id="inr">inr</span> : {A : <a href="#ty">ty</a>} (<a href="#tm">tm</a> B &#x2192 <a href="#tm">tm</a> (<a href="#sum">sum</a> A B))
+| <span class="constructor" id="match">match</span> : <a href="#tm">tm</a> (<a href="#sum">sum</a> A B) &#x2192 (<a href="#tm">tm</a> A &#x2192 <a href="#tm">tm</a> C) &#x2192 (<a href="#tm">tm</a> B &#x2192 <a href="#tm">tm</a> C) &#x2192 <a href="#tm">tm</a> C;
+<br><keyword>%name</keyword> tm M 
+<br><keyword>schema</keyword> <span class="schema" id="cxt">cxt</span> = <a href="#tm">tm</a> A;
+<br><keyword>LF</keyword> <span class="typ" id="step">step</span> : <a href="#tm">tm</a> A &#x2192 <a href="#tm">tm</a> A &#x2192 <keyword>type</keyword> = 
+| <span class="constructor" id="rbeta">rbeta</span> : <a href="#step">step</a> (<a href="#app">app</a> (<a href="#abs">abs</a> M) N) (M N)
+| <span class="constructor" id="rabs">rabs</span> : ({x : <a href="#tm">tm</a> A} (<a href="#step">step</a> (M x) (M' x))) &#x2192 <a href="#step">step</a> (<a href="#abs">abs</a> M) (<a href="#abs">abs</a> M')
+| <span class="constructor" id="rappl">rappl</span> : <a href="#step">step</a> M M' &#x2192 <a href="#step">step</a> (<a href="#app">app</a> M N) (<a href="#app">app</a> M' N)
+| <span class="constructor" id="rappr">rappr</span> : <a href="#step">step</a> N N' &#x2192 <a href="#step">step</a> (<a href="#app">app</a> M N) (<a href="#app">app</a> M N')
+| <span class="constructor" id="rinl">rinl</span> : <a href="#step">step</a> M N &#x2192 <a href="#step">step</a> (<a href="#inl">inl</a> B M) (<a href="#inl">inl</a> B N)
+| <span class="constructor" id="rinr">rinr</span> : <a href="#step">step</a> M N &#x2192 <a href="#step">step</a> (<a href="#inr">inr</a> A M) (<a href="#inr">inr</a> A N)
+| <span class="constructor" id="rcase">rcase</span> : <a href="#step">step</a> M M' &#x2192 <a href="#step">step</a> (<a href="#match">match</a> M N1 N2) (<a href="#match">match</a> M' N1 N2)
+| <span class="constructor" id="rcinl">rcinl</span> : <a href="#step">step</a> (<a href="#match">match</a> (<a href="#inl">inl</a> B M) N1 N2) (N1 M)
+| <span class="constructor" id="rcinr">rcinr</span> : <a href="#step">step</a> (<a href="#match">match</a> (<a href="#inr">inr</a> A M) N1 N2) (N2 M)
+| <span class="constructor" id="rcl">rcl</span> : ({x : <a href="#tm">tm</a> A} (<a href="#step">step</a> (N x) (N' x))) &#x2192 <a href="#step">step</a> (<a href="#match">match</a> M N N2) (<a href="#match">match</a> M N' N2)
+| <span class="constructor" id="rcr">rcr</span> : ({x : <a href="#tm">tm</a> B} (<a href="#step">step</a> (N x) (N' x))) &#x2192 <a href="#step">step</a> (<a href="#match">match</a> M N1 N) (<a href="#match">match</a> M N1 N');
+<br><keyword>LF</keyword> <span class="typ" id="mstep">mstep</span> : <a href="#tm">tm</a> A &#x2192 <a href="#tm">tm</a> A &#x2192 <keyword>type</keyword> = 
+| <span class="constructor" id="m-refl">m-refl</span> : <a href="#mstep">mstep</a> M M
+| <span class="constructor" id="m-step">m-step</span> : <a href="#step">step</a> M N &#x2192 <a href="#mstep">mstep</a> N M' &#x2192 <a href="#mstep">mstep</a> M M';
+<br><keyword>rec</keyword> <span class="function" id="subst_red">subst_red</span> : (g:<a href="#cxt">cxt</a>) {M : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> B[]]} {M' : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> B[]]} {N : [g &#x22A2 <a href="#tm">tm</a> A[]]} [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#step">step</a> M M'] &#x2192 [g &#x22A2 <a href="#step">step</a> M[&hellip;, N] M'[&hellip;, N]] / trust / =
+<keyword>mlam</keyword> M &#x21D2 <keyword>mlam</keyword> M' &#x21D2 <keyword>mlam</keyword> N &#x21D2 <keyword>fn</keyword> s &#x21D2 <keyword>case</keyword> s <keyword>of</keyword> 
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#rbeta">rbeta</a>] &#x21D2 [_ &#x22A2 <a href="#rbeta">rbeta</a>]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#rabs">rabs</a> (&lambda;y. S')] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 S'] : [g, x : <a href="#tm">tm</a> A[], y : <a href="#tm">tm</a> A'[] &#x22A2 <a href="#step">step</a> M M']= [_ &#x22A2 S'] <keyword>in</keyword> 
+    <keyword>let</keyword>  [g, y : <a href="#tm">tm</a> A'[] &#x22A2 S''] =
+    <a href="#subst_red">subst_red</a> [g, y : <a href="#tm">tm</a> A'[], x : <a href="#tm">tm</a> A[] &#x22A2 M[&hellip;, x, y]] [g, y : <a href="#tm">tm</a> A'[], x : <a href="#tm">tm</a> A[] &#x22A2 M'[&hellip;, x, y]] [g, y : <a href="#tm">tm</a> A'[] &#x22A2 N[&hellip;]] [g, y : <a href="#tm">tm</a> A'[], x : <a href="#tm">tm</a> A[] &#x22A2 S'[&hellip;, x, y]] <keyword>in</keyword>
+    [g &#x22A2 <a href="#rabs">rabs</a> (&lambda;y. S'')]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#rappl">rappl</a> S'] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 S''] = <a href="#subst_red">subst_red</a> [_ &#x22A2 _] [_ &#x22A2 _] [_ &#x22A2 N] [_ &#x22A2 S'] <keyword>in</keyword> [_ &#x22A2 <a href="#rappl">rappl</a> S'']
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#rappr">rappr</a> S'] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 S''] = <a href="#subst_red">subst_red</a> [_ &#x22A2 _] [_ &#x22A2 _] [_ &#x22A2 N] [_ &#x22A2 S'] <keyword>in</keyword> [_ &#x22A2 <a href="#rappr">rappr</a> S'']
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#rinl">rinl</a> S'] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 S''] = <a href="#subst_red">subst_red</a> [_ &#x22A2 _] [_ &#x22A2 _] [_ &#x22A2 N] [_ &#x22A2 S'] <keyword>in</keyword> [_ &#x22A2 <a href="#rinl">rinl</a> S'']
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#rinr">rinr</a> S'] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 S''] = <a href="#subst_red">subst_red</a> [_ &#x22A2 _] [_ &#x22A2 _] [_ &#x22A2 N] [_ &#x22A2 S'] <keyword>in</keyword> [_ &#x22A2 <a href="#rinr">rinr</a> S'']
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#rcinl">rcinl</a>] &#x21D2 [_ &#x22A2 <a href="#rcinl">rcinl</a>]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#rcinr">rcinr</a>] &#x21D2 [_ &#x22A2 <a href="#rcinr">rcinr</a>]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#rcase">rcase</a> S'] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 S''] = <a href="#subst_red">subst_red</a> [_ &#x22A2 _] [_ &#x22A2 _] [_ &#x22A2 N] [_ &#x22A2 S'] <keyword>in</keyword> [_ &#x22A2 <a href="#rcase">rcase</a> S'']
+  | [_ &#x22A2 <a href="#rcl">rcl</a> (&lambda;y. S')] : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#step">step</a> (<a href="#match">match</a> M1 (&lambda;x. N1) (&lambda;y. N2)) (<a href="#match">match</a> M1 (&lambda;x. N1') (&lambda;y. N2))] &#x21D2
+    <keyword>let</keyword>  [g, y : <a href="#tm">tm</a> B[] &#x22A2 S''] =
+    <a href="#subst_red">subst_red</a> [g, y : <a href="#tm">tm</a> _, x : <a href="#tm">tm</a> A[] &#x22A2 N1[&hellip;, x, y]] [_ &#x22A2 _] [g, y : <a href="#tm">tm</a> _ &#x22A2 N[&hellip;]] [g, y : <a href="#tm">tm</a> _, x : <a href="#tm">tm</a> A[] &#x22A2 S'[&hellip;, x, y]] <keyword>in</keyword>
+    [_ &#x22A2 <a href="#rcl">rcl</a> (&lambda;x. S'')]
+  | [_ &#x22A2 <a href="#rcr">rcr</a> (&lambda;x. S')] : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#step">step</a> (<a href="#match">match</a> M1 (&lambda;x. N1) (&lambda;y. N2)) (<a href="#match">match</a> M1 (&lambda;x. N1) (&lambda;y. N2'))] &#x21D2
+    <keyword>let</keyword>  [g, y : <a href="#tm">tm</a> B[] &#x22A2 S''] =
+    <a href="#subst_red">subst_red</a> [g, y : <a href="#tm">tm</a> _, x : <a href="#tm">tm</a> A[] &#x22A2 N2[&hellip;, x, y]] [_ &#x22A2 _] [g, y : <a href="#tm">tm</a> _ &#x22A2 N[&hellip;]] [g, y : <a href="#tm">tm</a> _, x : <a href="#tm">tm</a> A[] &#x22A2 S'[&hellip;, x, y]] <keyword>in</keyword>
+    [_ &#x22A2 <a href="#rcr">rcr</a> (&lambda;x. S'')];
+<br><keyword>rec</keyword> <span class="function" id="m-trans">m-trans</span> : (g:<a href="#cxt">cxt</a>) {M1 : [g &#x22A2 <a href="#tm">tm</a> A[]]} [g &#x22A2 <a href="#mstep">mstep</a> M1 M] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> M M2] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> M1 M2] / total s1 ( m-trans g a m1 m2 m s1 ) / =
+<keyword>mlam</keyword> M1 &#x21D2 <keyword>fn</keyword> s1 &#x21D2 <keyword>fn</keyword> s2 &#x21D2 <keyword>case</keyword> s1 <keyword>of</keyword> 
+  | [g &#x22A2 <a href="#m-refl">m-refl</a>] &#x21D2 s2
+  | [g &#x22A2 <a href="#m-step">m-step</a> S MS] &#x21D2
+    <keyword>let</keyword>  [g &#x22A2 MS'] = <a href="#m-trans">m-trans</a> [g &#x22A2 _] [g &#x22A2 MS] s2 <keyword>in</keyword> [g &#x22A2 <a href="#m-step">m-step</a> S MS'];
+<br><keyword>rec</keyword> <span class="function" id="mstep_appl">mstep_appl</span> : (g:<a href="#cxt">cxt</a>) {M : [g &#x22A2 <a href="#tm">tm</a> (<a href="#arr">arr</a> A[] B[])]} {M' : [g &#x22A2 <a href="#tm">tm</a> (<a href="#arr">arr</a> A[] B[])]} {N : [g &#x22A2 <a href="#tm">tm</a> A[]]} [g &#x22A2 <a href="#mstep">mstep</a> M M'] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> (<a href="#app">app</a> M N) (<a href="#app">app</a> M' N)] / total ms ( mstep_appl g a b m m' n ms ) / =
+<keyword>mlam</keyword> M &#x21D2 <keyword>mlam</keyword> M' &#x21D2 <keyword>mlam</keyword> N &#x21D2 <keyword>fn</keyword> ms &#x21D2 <keyword>case</keyword> ms <keyword>of</keyword> 
+  | [g &#x22A2 <a href="#m-refl">m-refl</a>] &#x21D2 [g &#x22A2 <a href="#m-refl">m-refl</a>]
+  | [g &#x22A2 <a href="#m-step">m-step</a> S MS'] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 MS''] = <a href="#mstep_appl">mstep_appl</a> [_ &#x22A2 _] [_ &#x22A2 M'] [_ &#x22A2 N] [_ &#x22A2 MS'] <keyword>in</keyword> [g &#x22A2 <a href="#m-step">m-step</a> (<a href="#rappl">rappl</a> S) MS''];
+<br><keyword>rec</keyword> <span class="function" id="mstep_appr">mstep_appr</span> : (g:<a href="#cxt">cxt</a>) {M : [g &#x22A2 <a href="#tm">tm</a> (<a href="#arr">arr</a> A[] B[])]} {N : [g &#x22A2 <a href="#tm">tm</a> A[]]} {N' : [g &#x22A2 <a href="#tm">tm</a> A[]]} [g &#x22A2 <a href="#mstep">mstep</a> N N'] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> (<a href="#app">app</a> M N) (<a href="#app">app</a> M N')] / total ms ( mstep_appr g a b m n n' ms ) / =
+<keyword>mlam</keyword> M &#x21D2 <keyword>mlam</keyword> N &#x21D2 <keyword>mlam</keyword> N' &#x21D2 <keyword>fn</keyword> ms &#x21D2 <keyword>case</keyword> ms <keyword>of</keyword> 
+  | [g &#x22A2 <a href="#m-refl">m-refl</a>] &#x21D2 [g &#x22A2 <a href="#m-refl">m-refl</a>]
+  | [g &#x22A2 <a href="#m-step">m-step</a> S MS'] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 MS''] = <a href="#mstep_appr">mstep_appr</a> [_ &#x22A2 M] [_ &#x22A2 _] [_ &#x22A2 N'] [_ &#x22A2 MS'] <keyword>in</keyword> [g &#x22A2 <a href="#m-step">m-step</a> (<a href="#rappr">rappr</a> S) MS''];
+<br><keyword>rec</keyword> <span class="function" id="mstep_abs">mstep_abs</span> : (g:<a href="#cxt">cxt</a>) {M : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> B[]]} [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#mstep">mstep</a> M M'] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> (<a href="#abs">abs</a> (&lambda;x. M)) (<a href="#abs">abs</a> (&lambda;x. M'))] / total ms ( mstep_abs g a b m m' ms ) / =
+<keyword>mlam</keyword> M &#x21D2 <keyword>fn</keyword> s1 &#x21D2 <keyword>case</keyword> s1 <keyword>of</keyword> 
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#m-refl">m-refl</a>] &#x21D2 [g &#x22A2 <a href="#m-refl">m-refl</a>]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#m-step">m-step</a> S MS] &#x21D2
+    <keyword>let</keyword>  [g &#x22A2 MS'] = <a href="#mstep_abs">mstep_abs</a> [g, x : <a href="#tm">tm</a> A[] &#x22A2 _] [g, x : <a href="#tm">tm</a> A[] &#x22A2 MS] <keyword>in</keyword> 
+    <keyword>let</keyword>  [g &#x22A2 S'] = [g &#x22A2 <a href="#rabs">rabs</a> (&lambda;x. S)] <keyword>in</keyword> [g &#x22A2 <a href="#m-step">m-step</a> S' MS'];
+<br><keyword>rec</keyword> <span class="function" id="mstep_inl">mstep_inl</span> : (g:<a href="#cxt">cxt</a>) {M : [g &#x22A2 <a href="#tm">tm</a> A[]]} {M' : [g &#x22A2 <a href="#tm">tm</a> A[]]} {B : [ &#x22A2 <a href="#ty">ty</a>]} [g &#x22A2 <a href="#mstep">mstep</a> M M'] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> (<a href="#inl">inl</a> B[] M) (<a href="#inl">inl</a> B[] M')] / total ms ( mstep_inl g a m m' b ms ) / =
+<keyword>mlam</keyword> M &#x21D2 <keyword>mlam</keyword> M' &#x21D2 <keyword>mlam</keyword> B &#x21D2 <keyword>fn</keyword> ms &#x21D2 <keyword>case</keyword> ms <keyword>of</keyword> 
+  | [g &#x22A2 <a href="#m-refl">m-refl</a>] &#x21D2 [g &#x22A2 <a href="#m-refl">m-refl</a>]
+  | [g &#x22A2 <a href="#m-step">m-step</a> S MS'] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 MS''] = <a href="#mstep_inl">mstep_inl</a> [_ &#x22A2 _] [_ &#x22A2 _] [ &#x22A2 B] [_ &#x22A2 MS'] <keyword>in</keyword> [g &#x22A2 <a href="#m-step">m-step</a> (<a href="#rinl">rinl</a> S) MS''];
+<br><keyword>rec</keyword> <span class="function" id="mstep_inr">mstep_inr</span> : (g:<a href="#cxt">cxt</a>) {M : [g &#x22A2 <a href="#tm">tm</a> A[]]} {M' : [g &#x22A2 <a href="#tm">tm</a> A[]]} {B : [ &#x22A2 <a href="#ty">ty</a>]} [g &#x22A2 <a href="#mstep">mstep</a> M M'] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> (<a href="#inr">inr</a> B[] M) (<a href="#inr">inr</a> B[] M')] / total ms ( mstep_inr g a m m' b ms ) / =
+<keyword>mlam</keyword> M &#x21D2 <keyword>mlam</keyword> M' &#x21D2 <keyword>mlam</keyword> B &#x21D2 <keyword>fn</keyword> ms &#x21D2 <keyword>case</keyword> ms <keyword>of</keyword> 
+  | [g &#x22A2 <a href="#m-refl">m-refl</a>] &#x21D2 [g &#x22A2 <a href="#m-refl">m-refl</a>]
+  | [g &#x22A2 <a href="#m-step">m-step</a> S MS] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 MS'] = <a href="#mstep_inr">mstep_inr</a> [_ &#x22A2 _] [_ &#x22A2 _] [ &#x22A2 B] [_ &#x22A2 MS] <keyword>in</keyword> [g &#x22A2 <a href="#m-step">m-step</a> (<a href="#rinr">rinr</a> S) MS'];
+<br><keyword>rec</keyword> <span class="function" id="mstep_match">mstep_match</span> : (g:<a href="#cxt">cxt</a>) {M : [g &#x22A2 <a href="#tm">tm</a> (<a href="#sum">sum</a> A[] B[])]} {M' : [g &#x22A2 <a href="#tm">tm</a> (<a href="#sum">sum</a> A[] B[])]} {N1 : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> C[]]} {N2 : [g, y : <a href="#tm">tm</a> B[] &#x22A2 <a href="#tm">tm</a> C[]]} [g &#x22A2 <a href="#mstep">mstep</a> M M'] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> (<a href="#match">match</a> M (&lambda;x. N1) (&lambda;y. N2)) (<a href="#match">match</a> M' (&lambda;x. N1) (&lambda;y. N2))] / total ms ( mstep_match g a b c m m' n1 n2 ms ) / =
+<keyword>mlam</keyword> M &#x21D2 <keyword>mlam</keyword> M' &#x21D2 <keyword>mlam</keyword> N1 &#x21D2 <keyword>mlam</keyword> N2 &#x21D2 <keyword>fn</keyword> ms &#x21D2 <keyword>case</keyword> ms <keyword>of</keyword> 
+  | [g &#x22A2 <a href="#m-refl">m-refl</a>] &#x21D2 [g &#x22A2 <a href="#m-refl">m-refl</a>]
+  | [g &#x22A2 <a href="#m-step">m-step</a> S MS] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 MS'] = <a href="#mstep_match">mstep_match</a> [_ &#x22A2 _] [_ &#x22A2 M'] [_ &#x22A2 N1] [_ &#x22A2 N2] [_ &#x22A2 MS] <keyword>in</keyword> [g &#x22A2 <a href="#m-step">m-step</a> (<a href="#rcase">rcase</a> S) MS'];
+<br><keyword>rec</keyword> <span class="function" id="mstep_matchl">mstep_matchl</span> : (g:<a href="#cxt">cxt</a>) {N : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> C[]]} {N' : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> C[]]} {M : [g &#x22A2 <a href="#tm">tm</a> (<a href="#sum">sum</a> A[] B[])]} {N2 : [g, y : <a href="#tm">tm</a> B[] &#x22A2 <a href="#tm">tm</a> C[]]} [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#mstep">mstep</a> N N'] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> (<a href="#match">match</a> M (&lambda;x. N) (&lambda;y. N2)) (<a href="#match">match</a> M (&lambda;x. N') (&lambda;y. N2))] / total ms ( mstep_matchl g a c b n n' m n2 ms ) / =
+<keyword>mlam</keyword> N &#x21D2 <keyword>mlam</keyword> N' &#x21D2 <keyword>mlam</keyword> M &#x21D2 <keyword>mlam</keyword> N2 &#x21D2 <keyword>fn</keyword> ms &#x21D2 <keyword>case</keyword> ms <keyword>of</keyword> 
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#m-refl">m-refl</a>] &#x21D2 [g &#x22A2 <a href="#m-refl">m-refl</a>]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#m-step">m-step</a> S MS] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 MS'] = <a href="#mstep_matchl">mstep_matchl</a> [_ &#x22A2 _] [_ &#x22A2 N'] [_ &#x22A2 M] [_ &#x22A2 N2] [_ &#x22A2 MS] <keyword>in</keyword> [g &#x22A2 <a href="#m-step">m-step</a> (<a href="#rcl">rcl</a> (&lambda;x. S)) MS'];
+<br><keyword>rec</keyword> <span class="function" id="mstep_matchr">mstep_matchr</span> : (g:<a href="#cxt">cxt</a>) {N : [g, x : <a href="#tm">tm</a> B[] &#x22A2 <a href="#tm">tm</a> C[]]} {N' : [g, x : <a href="#tm">tm</a> B[] &#x22A2 <a href="#tm">tm</a> C[]]} {M : [g &#x22A2 <a href="#tm">tm</a> (<a href="#sum">sum</a> A[] B[])]} {N1 : [g, y : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> C[]]} [g, x : <a href="#tm">tm</a> B[] &#x22A2 <a href="#mstep">mstep</a> N N'] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> (<a href="#match">match</a> M (&lambda;x. N1) (&lambda;y. N)) (<a href="#match">match</a> M (&lambda;x. N1) (&lambda;y. N'))] / total ms ( mstep_matchr g b c a n n' m n1 ms ) / =
+<keyword>mlam</keyword> N &#x21D2 <keyword>mlam</keyword> N' &#x21D2 <keyword>mlam</keyword> M &#x21D2 <keyword>mlam</keyword> N1 &#x21D2 <keyword>fn</keyword> ms &#x21D2 <keyword>case</keyword> ms <keyword>of</keyword> 
+  | [g, x : <a href="#tm">tm</a> B[] &#x22A2 <a href="#m-refl">m-refl</a>] &#x21D2 [g &#x22A2 <a href="#m-refl">m-refl</a>]
+  | [g, x : <a href="#tm">tm</a> B[] &#x22A2 <a href="#m-step">m-step</a> S MS] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 MS'] = <a href="#mstep_matchr">mstep_matchr</a> [_ &#x22A2 _] [_ &#x22A2 N'] [_ &#x22A2 M] [_ &#x22A2 N1] [_ &#x22A2 MS] <keyword>in</keyword> [g &#x22A2 <a href="#m-step">m-step</a> (<a href="#rcr">rcr</a> (&lambda;x. S)) MS'];
+<br><keyword>rec</keyword> <span class="function" id="subst_mred">subst_mred</span> : (g:<a href="#cxt">cxt</a>) {M : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> B[]]} {N : [g &#x22A2 <a href="#tm">tm</a> A[]]} {N' : [g &#x22A2 <a href="#tm">tm</a> A[]]} [g &#x22A2 <a href="#step">step</a> N N'] &#x2192 [g &#x22A2 <a href="#mstep">mstep</a> M[&hellip;, N] M[&hellip;, N']] / trust / =
+<keyword>mlam</keyword> M &#x21D2 <keyword>mlam</keyword> N &#x21D2 <keyword>mlam</keyword> N' &#x21D2 <keyword>fn</keyword> s &#x21D2 <keyword>case</keyword> [_, x : <a href="#tm">tm</a> _ &#x22A2 M] <keyword>of</keyword> 
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 x] &#x21D2 <keyword>let</keyword>  [g &#x22A2 S] = s <keyword>in</keyword> [g &#x22A2 <a href="#m-step">m-step</a> S <a href="#m-refl">m-refl</a>]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 #p[&hellip;]] &#x21D2 [g &#x22A2 <a href="#m-refl">m-refl</a>]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#abs">abs</a> (&lambda;y. M)] &#x21D2
+    <keyword>let</keyword>  [g &#x22A2 S] = s <keyword>in</keyword> <keyword>let</keyword>  [g, y : <a href="#tm">tm</a> _ &#x22A2 S'] =
+                                                                    <a href="#subst_mred">subst_mred</a> [g, y : <a href="#tm">tm</a> _, x : <a href="#tm">tm</a> A[] &#x22A2 M[&hellip;, x, y]] [g, y : <a href="#tm">tm</a> _ &#x22A2 N[&hellip;]] [g, y : <a href="#tm">tm</a> _ &#x22A2 N'[&hellip;]] [g, y : <a href="#tm">tm</a> _ &#x22A2 S[&hellip;]] <keyword>in</keyword>
+                                                                    <a href="#mstep_abs">mstep_abs</a> [g, y : <a href="#tm">tm</a> _ &#x22A2 _] [g, y : <a href="#tm">tm</a> _ &#x22A2 S']
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#app">app</a> M1 M2] &#x21D2
+    <keyword>let</keyword>  [g &#x22A2 S1] = <a href="#subst_mred">subst_mred</a> [g, x : <a href="#tm">tm</a> A[] &#x22A2 M1] [g &#x22A2 N] [g &#x22A2 N'] s <keyword>in</keyword> 
+    <keyword>let</keyword>  [g &#x22A2 S2] = <a href="#subst_mred">subst_mred</a> [g, x : <a href="#tm">tm</a> A[] &#x22A2 M2] [g &#x22A2 N] [g &#x22A2 N'] s <keyword>in</keyword> 
+    <keyword>let</keyword>  [g &#x22A2 MS1] =
+    <a href="#mstep_appl">mstep_appl</a> [g &#x22A2 M1[&hellip;, N]] [g &#x22A2 M1[&hellip;, N']] [g &#x22A2 M2[&hellip;, N]] [g &#x22A2 S1] <keyword>in</keyword> 
+    <keyword>let</keyword>  [g &#x22A2 MS2] =
+    <a href="#mstep_appr">mstep_appr</a> [g &#x22A2 M1[&hellip;, N']] [g &#x22A2 M2[&hellip;, N]] [g &#x22A2 M2[&hellip;, N']] [g &#x22A2 S2] <keyword>in</keyword> <a href="#m-trans">m-trans</a> [g &#x22A2 _] [g &#x22A2 MS1] [g &#x22A2 MS2]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#inl">inl</a> B[] M] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 MS] = <a href="#subst_mred">subst_mred</a> [_ &#x22A2 M] [_ &#x22A2 N] [_ &#x22A2 N'] s <keyword>in</keyword> <a href="#mstep_inl">mstep_inl</a> [g &#x22A2 M[&hellip;, N]] [g &#x22A2 M[&hellip;, N']] [ &#x22A2 B] [_ &#x22A2 MS]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#inr">inr</a> B[] M] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 MS] = <a href="#subst_mred">subst_mred</a> [_ &#x22A2 M] [_ &#x22A2 N] [_ &#x22A2 N'] s <keyword>in</keyword> <a href="#mstep_inr">mstep_inr</a> [_ &#x22A2 _] [_ &#x22A2 _] [ &#x22A2 B] [_ &#x22A2 MS]
+  | [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#match">match</a> M (&lambda;x. N1) (&lambda;y. N2)] &#x21D2
+    <keyword>let</keyword>  [_ &#x22A2 S] = s <keyword>in</keyword> <keyword>let</keyword>  [_ &#x22A2 S0] =
+                                                                    <a href="#subst_mred">subst_mred</a> [_ &#x22A2 M] [_ &#x22A2 N] [_ &#x22A2 N'] s <keyword>in</keyword> 
+    <keyword>let</keyword>  [g, y : <a href="#tm">tm</a> B[] &#x22A2 S1] =
+    <a href="#subst_mred">subst_mred</a> [g, y : <a href="#tm">tm</a> _, x : <a href="#tm">tm</a> A[] &#x22A2 N1[&hellip;, x, y]] [g, y : <a href="#tm">tm</a> _ &#x22A2 N[&hellip;]] [g, y : <a href="#tm">tm</a> _ &#x22A2 N'[&hellip;]] [g, y : <a href="#tm">tm</a> _ &#x22A2 S[&hellip;]] <keyword>in</keyword>
+    <keyword>let</keyword>  [g, y : <a href="#tm">tm</a> C[] &#x22A2 S2] =
+    <a href="#subst_mred">subst_mred</a> [g, y : <a href="#tm">tm</a> _, x : <a href="#tm">tm</a> A[] &#x22A2 N2[&hellip;, x, y]] [g, y : <a href="#tm">tm</a> _ &#x22A2 N[&hellip;]] [g, y : <a href="#tm">tm</a> _ &#x22A2 N'[&hellip;]] [g, y : <a href="#tm">tm</a> _ &#x22A2 S[&hellip;]] <keyword>in</keyword>
+    <keyword>let</keyword>  [g, x : <a href="#tm">tm</a> A[], y : <a href="#tm">tm</a> B[] &#x22A2 N1'] = [_ &#x22A2 N1] <keyword>in</keyword> 
+    <keyword>let</keyword>  [g &#x22A2 MS0] =
+    <a href="#mstep_match">mstep_match</a> [g &#x22A2 M[&hellip;, N]] [g &#x22A2 M[&hellip;, N']] [g, y : <a href="#tm">tm</a> B[] &#x22A2 N1[&hellip;, N[&hellip;], y]] [g, y : <a href="#tm">tm</a> C[] &#x22A2 N2[&hellip;, N[&hellip;], y]] [_ &#x22A2 S0] <keyword>in</keyword>
+    <keyword>let</keyword>  [g &#x22A2 MS1] =
+    <a href="#mstep_matchl">mstep_matchl</a> [g, y : <a href="#tm">tm</a> B[] &#x22A2 N1[&hellip;, N[&hellip;], y]] [g, y : <a href="#tm">tm</a> B[] &#x22A2 N1[&hellip;, N'[&hellip;], y]] [g &#x22A2 M[&hellip;, N']] [g, y : <a href="#tm">tm</a> C[] &#x22A2 N2[&hellip;, N[&hellip;], y]] [_ &#x22A2 S1] <keyword>in</keyword>
+    <keyword>let</keyword>  [g &#x22A2 MS2] =
+    <a href="#mstep_matchr">mstep_matchr</a> [g, y : <a href="#tm">tm</a> C[] &#x22A2 N2[&hellip;, N[&hellip;], y]] [g, y : <a href="#tm">tm</a> C[] &#x22A2 N2[&hellip;, N'[&hellip;], y]] [g &#x22A2 M[&hellip;, N']] [g, y : <a href="#tm">tm</a> B[] &#x22A2 N1[&hellip;, N'[&hellip;], y]] [_ &#x22A2 S2] <keyword>in</keyword>
+    <a href="#m-trans">m-trans</a> [_ &#x22A2 _] [_ &#x22A2 MS0] (<a href="#m-trans">m-trans</a> [_ &#x22A2 _] [_ &#x22A2 MS1] [_ &#x22A2 MS2]);
+<br><keyword>inductive</keyword> <span class="typ" id="Sn">Sn</span> : {g : <a href="#cxt">cxt</a>} &#x2192 {M : [g &#x22A2 <a href="#tm">tm</a> A[]]} &#x2192 <keyword>ctype</keyword> = 
+| <span class="constructor" id="Acc">Acc</span> : {g : <a href="#cxt">cxt</a>} {A : [ &#x22A2 <a href="#ty">ty</a>]} {M : [g &#x22A2 <a href="#tm">tm</a> A[]]} ({M' : [g &#x22A2 <a href="#tm">tm</a> A[]]} {S : [g &#x22A2 <a href="#step">step</a> M M']} <a href="&sigma;n">Sn</a> [g &#x22A2 M']) &#x2192 <a href="&sigma;n">Sn</a> [g &#x22A2 M];
+<br><keyword>rec</keyword> <span class="function" id="mstep_sn">mstep_sn</span> : (g:<a href="#cxt">cxt</a>) {M : [g &#x22A2 <a href="#tm">tm</a> A[]]} {M' : [g &#x22A2 <a href="#tm">tm</a> A[]]} [g &#x22A2 <a href="#mstep">mstep</a> M M'] &#x2192 <a href="&sigma;n">Sn</a> [g &#x22A2 M] &#x2192 <a href="&sigma;n">Sn</a> [g &#x22A2 M'] / total sn ( mstep_sn g m m' ms sn ) / =
+<keyword>mlam</keyword> M &#x21D2 <keyword>mlam</keyword> M' &#x21D2 <keyword>fn</keyword> ms &#x21D2 <keyword>fn</keyword> sn &#x21D2 <keyword>case</keyword> ms <keyword>of</keyword> 
+  | [g &#x22A2 <a href="#m-refl">m-refl</a>] &#x21D2 sn
+  | [g &#x22A2 <a href="#m-step">m-step</a> S MS'] &#x21D2
+    <keyword>let</keyword>  <a href="#Acc">Acc</a> ([g]) ([ &#x22A2 A]) ([g &#x22A2 _]) r = sn <keyword>in</keyword> 
+    <keyword>let</keyword> sn' = r [_ &#x22A2 _] [_ &#x22A2 S] <keyword>in</keyword> <a href="#mstep_sn">mstep_sn</a> [_ &#x22A2 _] [_ &#x22A2 M'] [_ &#x22A2 MS'] sn';
+<br><keyword>inductive</keyword> <span class="typ" id="SN">SN</span> : {g : <a href="#cxt">cxt</a>} &#x2192 {M : [g &#x22A2 <a href="#tm">tm</a> A[]]} &#x2192 <keyword>ctype</keyword> = 
+| <span class="constructor" id="SNeu">SNeu</span> : <a href="&sigma;Ne">SNe</a> [g &#x22A2 R] &#x2192 <a href="&sigma;N">SN</a> [g &#x22A2 R]
+| <span class="constructor" id="SAbs">SAbs</span> : <a href="&sigma;N">SN</a> [g, x : <a href="#tm">tm</a> A[] &#x22A2 M] &#x2192 <a href="&sigma;N">SN</a> [g &#x22A2 <a href="#abs">abs</a> (&lambda;x. M)]
+| <span class="constructor" id="SRed">SRed</span> : <a href="&sigma;NRed">SNRed</a> [g &#x22A2 M] [g &#x22A2 M'] &#x2192 <a href="&sigma;N">SN</a> [g &#x22A2 M'] &#x2192 <a href="&sigma;N">SN</a> [g &#x22A2 M]
+| <span class="constructor" id="SInl">SInl</span> : <a href="&sigma;N">SN</a> [g &#x22A2 M] &#x2192 <a href="&sigma;N">SN</a> [g &#x22A2 <a href="#inl">inl</a> _ M]
+| <span class="constructor" id="SInr">SInr</span> : <a href="&sigma;N">SN</a> [g &#x22A2 M] &#x2192 <a href="&sigma;N">SN</a> [g &#x22A2 <a href="#inr">inr</a> _ M]
+<keyword>and</keyword> <keyword>inductive</keyword> <span class="typ" id="SNe">SNe</span> : {g : <a href="#cxt">cxt</a>} &#x2192 {M : [g &#x22A2 <a href="#tm">tm</a> A[]]} &#x2192 <keyword>ctype</keyword> = 
+| <span class="constructor" id="SVar">SVar</span> : {#p : [g &#x22A2 <a href="#tm">tm</a> A[]]} <a href="&sigma;Ne">SNe</a> [g &#x22A2 #p]
+| <span class="constructor" id="SApp">SApp</span> : <a href="&sigma;Ne">SNe</a> [g &#x22A2 R] &#x2192 <a href="&sigma;N">SN</a> [g &#x22A2 M] &#x2192 <a href="&sigma;Ne">SNe</a> [g &#x22A2 <a href="#app">app</a> R M]
+| <span class="constructor" id="SCase">SCase</span> : <a href="&sigma;Ne">SNe</a> [g &#x22A2 M] &#x2192 <a href="&sigma;N">SN</a> [g, x : <a href="#tm">tm</a> A[] &#x22A2 N1] &#x2192 <a href="&sigma;N">SN</a> [g, y : <a href="#tm">tm</a> B[] &#x22A2 N2] &#x2192 <a href="&sigma;Ne">SNe</a> [g &#x22A2 <a href="#match">match</a> M (&lambda;x. N1) (&lambda;y. N2)]
+<keyword>and</keyword> <keyword>inductive</keyword> <span class="typ" id="SNRed">SNRed</span> : {g : <a href="#cxt">cxt</a>} &#x2192 {M : [g &#x22A2 <a href="#tm">tm</a> A[]]} &#x2192 {M' : [g &#x22A2 <a href="#tm">tm</a> A[]]} &#x2192 <keyword>ctype</keyword> = 
+| <span class="constructor" id="SBeta">SBeta</span> : {M : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> B[]]} <a href="&sigma;N">SN</a> [g &#x22A2 N] &#x2192 <a href="&sigma;NRed">SNRed</a> [g &#x22A2 <a href="#app">app</a> (<a href="#abs">abs</a> (&lambda;x. M)) N] [g &#x22A2 M[&hellip;, N]]
+| <span class="constructor" id="SAppl">SAppl</span> : <a href="&sigma;NRed">SNRed</a> [g &#x22A2 R] [g &#x22A2 R'] &#x2192 <a href="&sigma;NRed">SNRed</a> [g &#x22A2 <a href="#app">app</a> R M] [g &#x22A2 <a href="#app">app</a> R' M]
+| <span class="constructor" id="SCInl">SCInl</span> : <a href="&sigma;N">SN</a> [g &#x22A2 M] &#x2192 <a href="&sigma;N">SN</a> [g, x : <a href="#tm">tm</a> A[] &#x22A2 N1] &#x2192 <a href="&sigma;N">SN</a> [g, y : <a href="#tm">tm</a> B[] &#x22A2 N2] &#x2192 <a href="&sigma;NRed">SNRed</a> [g &#x22A2 <a href="#match">match</a> (<a href="#inl">inl</a> B[] M) (&lambda;x. N1) (&lambda;y. N2)] [g &#x22A2 N1[&hellip;, M]]
+| <span class="constructor" id="SCInr">SCInr</span> : <a href="&sigma;N">SN</a> [g &#x22A2 M] &#x2192 <a href="&sigma;N">SN</a> [g, x : <a href="#tm">tm</a> A[] &#x22A2 N1] &#x2192 <a href="&sigma;N">SN</a> [g, y : <a href="#tm">tm</a> B[] &#x22A2 N2] &#x2192 <a href="&sigma;NRed">SNRed</a> [g &#x22A2 <a href="#match">match</a> (<a href="#inr">inr</a> A[] M) (&lambda;x. N1) (&lambda;y. N2)] [g &#x22A2 N2[&hellip;, M]]
+| <span class="constructor" id="SRCase">SRCase</span> : <a href="&sigma;NRed">SNRed</a> [g &#x22A2 M] [g &#x22A2 M'] &#x2192 {N1 : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> C[]]} {N2 : [g, y : <a href="#tm">tm</a> B[] &#x22A2 <a href="#tm">tm</a> C[]]} <a href="&sigma;NRed">SNRed</a> [g &#x22A2 <a href="#match">match</a> M (&lambda;x. N1) (&lambda;y. N2)] [g &#x22A2 <a href="#match">match</a> M' (&lambda;x. N1) (&lambda;y. N2)];
+<br><keyword>inductive</keyword> <span class="typ" id="SnRed">SnRed</span> : {g : <a href="#cxt">cxt</a>} &#x2192 {M : [g &#x22A2 <a href="#tm">tm</a> A[]]} &#x2192 {M' : [g &#x22A2 <a href="#tm">tm</a> A[]]} &#x2192 <keyword>ctype</keyword> = 
+| <span class="constructor" id="SnBeta">SnBeta</span> : {M : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> B[]]} <a href="&sigma;n">Sn</a> [g &#x22A2 N] &#x2192 <a href="&sigma;nRed">SnRed</a> [g &#x22A2 <a href="#app">app</a> (<a href="#abs">abs</a> (&lambda;x. M)) N] [g &#x22A2 M[&hellip;, N]]
+| <span class="constructor" id="SnAppl">SnAppl</span> : <a href="&sigma;nRed">SnRed</a> [g &#x22A2 M] [g &#x22A2 M'] &#x2192 <a href="&sigma;nRed">SnRed</a> [g &#x22A2 <a href="#app">app</a> M N] [g &#x22A2 <a href="#app">app</a> M' N]
+| <span class="constructor" id="SnCInl">SnCInl</span> : <a href="&sigma;n">Sn</a> [g &#x22A2 M] &#x2192 <a href="&sigma;n">Sn</a> [g, x : <a href="#tm">tm</a> A[] &#x22A2 N1] &#x2192 <a href="&sigma;n">Sn</a> [g, y : <a href="#tm">tm</a> B[] &#x22A2 N2] &#x2192 <a href="&sigma;nRed">SnRed</a> [g &#x22A2 <a href="#match">match</a> (<a href="#inl">inl</a> B[] M) (&lambda;x. N1) (&lambda;y. N2)] [g &#x22A2 N1[&hellip;, M]]
+| <span class="constructor" id="SnCInr">SnCInr</span> : <a href="&sigma;n">Sn</a> [g &#x22A2 M] &#x2192 <a href="&sigma;n">Sn</a> [g, x : <a href="#tm">tm</a> A[] &#x22A2 N1] &#x2192 <a href="&sigma;n">Sn</a> [g, y : <a href="#tm">tm</a> B[] &#x22A2 N2] &#x2192 <a href="&sigma;nRed">SnRed</a> [g &#x22A2 <a href="#match">match</a> (<a href="#inr">inr</a> A[] M) (&lambda;x. N1) (&lambda;y. N2)] [g &#x22A2 N2[&hellip;, M]]
+| <span class="constructor" id="SnCasR">SnCasR</span> : <a href="&sigma;nRed">SnRed</a> [g &#x22A2 M] [g &#x22A2 M'] &#x2192 {N1 : [g, x : <a href="#tm">tm</a> A[] &#x22A2 <a href="#tm">tm</a> C[]]} {N2 : [g, y : <a href="#tm">tm</a> B[] &#x22A2 <a href="#tm">tm</a> C[]]} <a href="&sigma;nRed">SnRed</a> [g &#x22A2 <a href="#match">match</a> M (&lambda;x. N1) (&lambda;y. N2)] [g &#x22A2 <a href="#match">match</a> M' (&lambda;x. N1) (&lambda;y. N2)];
+</code></pre><br><br><h3>To download the code: <a href="sn_def.bel" target="_blank">sn_def.bel</a></h3>
+
+</body>
+</html>
