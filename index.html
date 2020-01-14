@@ -1,57 +1,175 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta charset="utf-8">
-  <title>POPLMark reloaded</title>
-  <link rel="stylesheet" href="index_files/site-40d3ebebbd14d73c1a2f449e109a016ab13b3ba29987bc4f8eff487.css">
-  <link rel="stylesheet" href="index_files/github-e44ecf269c9d06cd9d34f65adaef2eb78a65fda33728f88a2340f.css">
-  <link rel="stylesheet" href="index_files/frameworks-c9193575f18b28be82c0a963e144ff6fa7a809dd8ae003a1d.css">
-  <link rel="stylesheet" href="index_files/octicons.css">
-  <style>
-    /* Page tweaks */
-    .preview-page {
-      margin-top: 64px;
-    }
-    /* User-content tweaks */
-    .timeline-comment-wrapper > .timeline-comment:after,
-    .timeline-comment-wrapper > .timeline-comment:before {
-      content: none;
-    }
-    /* User-content overrides */
-    .discussion-timeline.wide {
-      width: 920px;
-    }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <div id="preview-page" class="preview-page">
+<!DOCTYPE html PUBLIC "-//W3C//DTD
+		       XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>POPLmark Reloaded</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
 
+  <body>
 
+    <div class="content">
+      <h1>POPLmark Reloaded</h1>
+  <!--   <img src="./The POPLmark Challenge_files/poplmark.png" alt="POPLmark logo" class="logo"> -->
 
-      <div role="main" class="main-content">
-        <div class="container new-discussion-timeline experiment-repo-nav">
-          <div class="repository-content">
-            <div id="readme" class="readme boxed-group clearfix announce instapaper_body md">
-              <article class="markdown-body entry-content" itemprop="text" id="grip-content">
-                <h1>
-<a id="user-content-poplmark-reloaded" class="anchor" href="#poplmark-reloaded" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>POPLMark reloaded</h1>
-<ul>
-<li><a href="agda/index.html">Agda solution</a></li>
-<li><a href="beluga/index.html">Beluga solution</a></li>
-<li><a href="coq/well-typed/toc.html">Coq solution: STLC</a></li>
-<li><a href="coq/well-typed-sums/toc.html">Coq solution: Extension by disjoint sum types</a></li>
-</ul>
+      <p>
+	How close are we to a world where
+every paper on programming languages is accompanied by an electronic appendix with
+machine checked proofs? 
+      <b>POPLmark Reloaded</b>, as the name suggests, follows up 
+      the
+      original <a href="https://www.seas.upenn.edu/~plclub/poplmark/">POPLmark
+      Challenge</a> by proposing a new collection of benchmark
+      problems in mechanizing the meta-theory of programming languages,
+      in order to compare and push the state of the art of proof
+      assistants. We focus on proofs using<em> logical relations</em>
+      and propose establishing strong normalization of a simply-typed
+      lambda-calculus (and its extension with disjoint sums) with a
+      proof by Kripke-style logical relations as a benchmark.
 
-              </article>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
+   
+      More details in the paper "<em>POPLMark Reloaded: Mechanizing
+Proofs by Logical Relations</em>", please check it out at <a href="
+								   http://dx.doi.org/10.1017/S0956796819000170">(DOI)</a>. Please cite it as:
+      <pre>
+@article{poplmark_reloaded,
+ title =	 {POPLMark reloaded: Mechanizing proofs by logical
+                  relations},
+ volume =	 29,
+ DOI =		 {10.1017/S0956796819000170},
+ journal =	 {Journal of Functional Programming},
+ publisher =	 {Cambridge University Press},
+ author =	 {Abel, Andreas and Allais, Guillaume and Hameer,
+                  Aliya and Pientka, Brigitte and Momigliano, Alberto
+                  and Schäfer, Steven and Stark, Kathrin},
+  year =	 2019,
+  pages =	 {e19}
+}
+      </pre>
+      
+    </p>
   </div>
-  <div>&nbsp;</div>
+
+  <div class="content">
+    <p class="heading"> About the Challenge Problems </p>
+
+    <p>
+
+    </p>
+    
+    <ul>
+      <li> A pre-print of the paper:
+             [<a href="pdf/main.pdf">PDF</a>]
+            
+      </li>
+
+      <li> The appendix with the detailed proof of the challenge and its extension:
+             [<a href="pdf/appendix.pdf">PDF</a>]
+      </li>
+      <li>You can browse the HTML of some solutions to the challenge <a href="https://poplmark-reloaded.github.io/">here</a>, while the code  <a href="#code" id="code">follows</a>.
+      </li>
+    </ul>
   </div>
+
+  <div class="content">
+    <p class="heading"><A NAME="code"></A>Initial Solutions</p>
+
+    <p> We have supplemented the paper with a set of solutions of the
+    basic challenge and its extension in Agda, Coq and Beluga. The
+    community has already provided additional solutions in F* and
+    Lean. Here's a summary:
+
+      
+    </p>
+
+     <table class="compare">
+      <tbody><tr>
+                <th>System</th>
+        <th>Technique</th>
+        <th>STLC</th>
+        <th>STLC+</th>
+	</tr>
+	<tr>
+          <th>Agda</th>
+	  <th>Generic syntax</th>
+	  <th><a href="code/agda/agda.zip">Allais</a>
+	  </th>
+     <th><a href="code/agda/agda.zip">Allais</a>
+	  </th>
+
+	</tr>
+          <th>Beluga</th>
+	  <th>HOAS, well-typed</th>
+	  <th><a href="code/beluga/stlc.zip">Hameer and Pientka</a>
+	  </th>
+     <th><a href="code/beluga/stlc_sums.zip">Hameer and Pientka</a>
+	  </th>
+	</tr>
+	<th>Coq</th>
+
+	  <th>DB, well-scoped</th>
+	  <th><a href="code/coq/well-scoped/stlc.zip">Schaefer and Stark</a>
+	  </th>
+     <th><a href="code/coq/well-scoped/stlc_sums.zip">Schaefer and Stark</a>
+	  </th>	</tr>
+	<th>Coq</th>
+
+	  <th>DB, well-typed</th>
+	  <th><a href="code/coq/well-typed/stlc.zip">Schaefer and Stark</a>
+	  </th>
+     <th><a href="code/coq/well-typed/stlc_sums.zip">Schaefer and Stark</a>
+     </th></tr>
+     <th>F*</th>
+
+	  <th>DB, well-typed</th>
+	  <th><a href="code/f-star/stlc.zip">Sturm</a>
+	  </th>
+     <th>
+	  </th>
+	
+    </tbody></table>
+    <p>More information about the F* solution can be found in Sebastian's <a href="https://github.com/sturmsebastian/Fstar-POPLmark-Reloaded/blob/master/master_thesis.pdf">MS thesis</a>.
+    </p>
+    
+ </div>
+
+
+  <div class="content">
+    <p class="heading">Contributing</p>
+
+    <p>We welcome contributions from the community, in the form of
+    solutions, or even as suggestions of future challenges. For the
+    time being, please write to
+      <a href="mailto:poplmarkreloaded@gmail.com">poplmarkreloaded@gmail.com</a>. In the near future, you will able to pull from  the GitHub
+      <a href="https://github.com/poplmark-reloaded">repo</a>.
+      </p>
+  </div>
+
+  <div class="content">
+    <p class="heading">People</p>
+
+    <p>The POPLmark Reloaded team is:</p>
+    
+      Andreas Abel (Gothenburg University), Guillaume Allais
+      (Radboud University), Aliya Hameer, Brigitte Pientka (Mcgill
+      University), Alberto Momigliano (University of Milan), Steven
+      Schaefer and Kathrin Stark (Saarland University).
+      
+      
+  </div>
+
+  <!-- <div class="content"> -->
+  <!--   <p class="heading">Acknowledgments</p> -->
+
+  <!--   This project has been supported by ??? -->
+  <!-- </div> -->
+
+  
 </body></html>
+
+<!--  LocalWords:  POPLmark POPLMark DOI STLC Allais Hameer Schaefer
+ -->
+<!--  LocalWords:  Sturm repo Andreas Gothenburg Guillaume Radboud
+ -->
+<!--  LocalWords:  Aliya Mcgill Kathrin Saarland
+ -->

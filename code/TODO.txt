@@ -1,0 +1,10 @@
+ask Uli for fstar docs
+
+ask KS for Lean code
+
+table
+
+system	 syntax		stlc	stlc+	
+
+coq	 welltyped	link	link
+coq	 wellscoped	..
