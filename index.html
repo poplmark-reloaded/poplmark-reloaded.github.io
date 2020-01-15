@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD
 		       XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+
     <title>POPLmark Reloaded</title>
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
@@ -15,8 +15,8 @@
       <p>
 	How close are we to a world where
 every paper on programming languages is accompanied by an electronic appendix with
-machine checked proofs? 
-      <b>POPLmark Reloaded</b>, as the name suggests, follows up 
+machine checked proofs?
+      <b>POPLmark Reloaded</b>, as the name suggests, follows up
       the
       original <a href="https://www.seas.upenn.edu/~plclub/poplmark/">POPLmark
       Challenge</a> by proposing a new collection of benchmark
@@ -27,7 +27,7 @@ machine checked proofs?
       lambda-calculus (and its extension with disjoint sums) with a
       proof by Kripke-style logical relations as a benchmark.
 
-   
+
       More details in the paper "<em>POPLMark Reloaded: Mechanizing
 Proofs by Logical Relations</em>", please check it out at <a href="
 								   http://dx.doi.org/10.1017/S0956796819000170">(DOI)</a>. Please cite it as:
@@ -46,7 +46,7 @@ Proofs by Logical Relations</em>", please check it out at <a href="
   pages =	 {e19}
 }
       </pre>
-      
+
     </p>
   </div>
 
@@ -56,17 +56,17 @@ Proofs by Logical Relations</em>", please check it out at <a href="
     <p>
 
     </p>
-    
+
     <ul>
       <li> A pre-print of the paper:
              [<a href="pdf/main.pdf">PDF</a>]
-            
+
       </li>
 
       <li> The appendix with the detailed proof of the challenge and its extension:
              [<a href="pdf/appendix.pdf">PDF</a>]
       </li>
-      <li>You can browse the HTML of some solutions to the challenge <a href="https://poplmark-reloaded.github.io/">here</a>, while the code  <a href="#code" id="code">follows</a>.
+      <li>You can browse the HTML of some solutions to the challenge and the code  <a href="#code" id="code">below</a>.
       </li>
     </ul>
   </div>
@@ -79,7 +79,7 @@ Proofs by Logical Relations</em>", please check it out at <a href="
     community has already provided additional solutions in F* and
     Lean. Here's a summary:
 
-      
+
     </p>
 
      <table class="compare">
@@ -92,32 +92,32 @@ Proofs by Logical Relations</em>", please check it out at <a href="
 	<tr>
           <th>Agda</th>
 	  <th>Generic syntax</th>
-	  <th><a href="code/agda/agda.zip">Allais</a>
+	  <th><a href="agda/STLC.html">Allais</a> (<a href="code/agda/agda.zip">code</a>)
 	  </th>
-     <th><a href="code/agda/agda.zip">Allais</a>
+     <th><a href="agda/STLC%2B.html">Allais</a> (<a href="code/agda/agda.zip">code</a>)
 	  </th>
 
 	</tr>
           <th>Beluga</th>
 	  <th>HOAS, well-typed</th>
-	  <th><a href="code/beluga/stlc.zip">Hameer and Pientka</a>
+	  <th><a href="beluga/stlc/index.html">Hameer and Pientka</a> (<a href="code/beluga/stlc.zip">code</a>)
 	  </th>
-     <th><a href="code/beluga/stlc_sums.zip">Hameer and Pientka</a>
+     <th><a href="beluga/stlc_sums/index.html">Hameer and Pientka</a> (<a href="code/beluga/stlc.zip">code</a>)
 	  </th>
 	</tr>
 	<th>Coq</th>
 
 	  <th>DB, well-scoped</th>
-	  <th><a href="code/coq/well-scoped/stlc.zip">Schaefer and Stark</a>
+	  <th><a href="coq/well-scoped/toc.html">Schaefer and Stark</a> (<a href="code/coq/well-scoped/stlc.zip">code</a>)
 	  </th>
-     <th><a href="code/coq/well-scoped/stlc_sums.zip">Schaefer and Stark</a>
+     <th><a href="coq/well-scoped-sums/toc.html">Schaefer and Stark</a> (<a href="code/coq/well-scoped/stlc_sums.zip">code</a>)
 	  </th>	</tr>
 	<th>Coq</th>
 
 	  <th>DB, well-typed</th>
-	  <th><a href="code/coq/well-typed/stlc.zip">Schaefer and Stark</a>
+	  <th><a href="coq/well-typed/toc.html">Schaefer and Stark</a> (<a href="code/coq/well-typed/stlc.zip">code</a>)
 	  </th>
-     <th><a href="code/coq/well-typed/stlc_sums.zip">Schaefer and Stark</a>
+     <th><a href="code/coq/well-typed-sum/toc.html">Schaefer and Stark</a> (<a href="code/coq/well-typed/stlc_sums.zip">code</a>)
      </th></tr>
      <th>F*</th>
 
@@ -126,11 +126,11 @@ Proofs by Logical Relations</em>", please check it out at <a href="
 	  </th>
      <th>
 	  </th>
-	
+
     </tbody></table>
     <p>More information about the F* solution can be found in Sebastian's <a href="https://github.com/sturmsebastian/Fstar-POPLmark-Reloaded/blob/master/master_thesis.pdf">MS thesis</a>.
     </p>
-    
+
  </div>
 
 
@@ -149,13 +149,13 @@ Proofs by Logical Relations</em>", please check it out at <a href="
     <p class="heading">People</p>
 
     <p>The POPLmark Reloaded team is:</p>
-    
+
       Andreas Abel (Gothenburg University), Guillaume Allais
       (Radboud University), Aliya Hameer, Brigitte Pientka (Mcgill
       University), Alberto Momigliano (University of Milan), Steven
       Schaefer and Kathrin Stark (Saarland University).
-      
-      
+
+
   </div>
 
   <!-- <div class="content"> -->
@@ -164,7 +164,7 @@ Proofs by Logical Relations</em>", please check it out at <a href="
   <!--   This project has been supported by ??? -->
   <!-- </div> -->
 
-  
+
 </body></html>
 
 <!--  LocalWords:  POPLmark POPLMark DOI STLC Allais Hameer Schaefer
